@@ -43,7 +43,7 @@
     <div class="login-container">
         <div class="text-center">
             <img src="<?= base_url()?>/templates/dist/img/logo_MA.png" alt="Logo MA" width="150">
-            <h4 class="logo-text">Absensi Madrasah Aliyah Trisula</h4>
+            <h4 class="logo-text">Presensi Madrasah Aliyah Trisula</h4>
         </div>
 
         <!-- Menampilkan pesan error jika login gagal -->

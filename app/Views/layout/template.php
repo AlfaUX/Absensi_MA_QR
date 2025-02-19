@@ -19,7 +19,6 @@
         <!-- Content Wrapper -->
         <div class="content-wrapper">
             <!-- Content Header -->
-            <?= $this->include('layout/header') ?>
 
             <!-- Main content -->
             <?= $this->renderSection('content') ?>

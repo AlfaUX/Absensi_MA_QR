@@ -7,12 +7,6 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
 
-// // Manajemen Data
-// $routes->get('/pages/data_guru', 'Data_guru::index');
-// $routes->get('/pages/data_siswa', 'Data_siswa::index');
-// // $routes->get('/pages/absensi_guru', 'Absensi_guru::index');
-// $routes->get('/pages/absensi_siswa', 'Absensi_siswa::index');
-// $routes->get('/pages/dashboard','Dashboard::index');
 
 // Fitur Lain
 $routes->get('pages/scan_qr', 'QRController::index');
@@ -27,30 +21,31 @@ $routes->get('/logout', 'Admin_login::logout');
 // Dashboard (Proteksi dengan Filter Auth)
 $routes->get('/pages/dashboard', 'Dashboard::index', ['filter' => 'auth']); 
 $routes->get('/pages/data_guru', 'Data_guru::index', ['filter' => 'auth']); 
-$routes->get('/pages/data_siswa', 'Data_siswa::index', ['filter' => 'auth']); 
+$routes->get('/siswa/index', 'Siswa::index', ['filter' => 'auth']); 
 $routes->get('/pages/absensi_guru', 'Absensi_guru::index', ['filter' => 'auth']); 
 $routes->get('/pages/absensi_siswa', 'Absensi_siswa::index', ['filter' => 'auth']); 
 
-//kelola data siswa
-$routes->get('/siswa', 'Data_siswa::index');
-$routes->get('/siswa/tambah', 'Data_siswa::tambah');
-$routes->post('/siswa/simpan', 'Data_siswa::simpan');
-$routes->post('/siswa/import_csv', 'Data_siswa::import_csv');
-$routes->get('/siswa/edit/(:num)', 'Data_siswa::edit/$1'); 
-$routes->post('/siswa/update', 'Data_siswa::update');
-$routes->get('siswa/delete/(:num)', 'Data_siswa::delete/$1');
-$routes->get('/siswa/download_template', 'Data_siswa::download_template');
-$routes->post('/siswa/import_csv', 'Data_siswa::import_csv');
+/// Kelola Data Siswa
+$routes->get('siswa/index', 'Siswa::index', ['filter' => 'auth']);
+$routes->get('/siswa', 'Siswa::index'); // Menampilkan daftar siswa
+$routes->get('/siswa/tambah', 'Siswa::tambah'); // Form tambah siswa
+$routes->post('/siswa/simpan', 'Siswa::simpan'); // Proses simpan siswa
+$routes->get('/siswa/edit/(:num)', 'Siswa::edit/$1'); // Form edit siswa
+$routes->post('/siswa/update/(:num)', 'Siswa::update/$1'); // Proses update siswa
+$routes->get('/siswa/hapus/(:num)', 'Siswa::hapus/$1'); // Hapus siswa
 
-//download qr siswa
-$routes->get('siswa/generate_qr/(:num)', 'Data_siswa::generateQR/$1');
-$routes->get('siswa/download_qr/(:num)', 'Data_siswa::downloadQR/$1');
+// qr code siswa
+$routes->get('siswa/generate/(:num)', 'Siswa::generate/$1', ['filter' => 'auth']);
+$routes->get('qrcode/generate/(:num)', 'QRCodeController::generate/$1');
 
 //data absensi siswa
-$routes->get('/absensi_siswa', 'Absensi_siswa::index');
-$routes->post('/absensi_siswa/scanQR', 'Absensi_siswa::scanQR');
-$routes->post('/absensi_siswa/update_keterangan', 'Absensi_siswa::updateKeterangan');
-$routes->post('/qr/absen', 'QrController::absen');
+$routes->get('/absensi/index', 'Absensi::index', ['filter' => 'auth']);
+$routes->get('/absensi', 'Absensi::index');
+$routes->get('/absensi/scan', 'Absensi::scan');
+$routes->post('absensi/prosesScan', 'Absensi::prosesScan');
+$routes->post('/absensi/saveScan', 'Absensi::saveScan');
+$routes->get('absensi/hapus/(:num)', 'Absensi::hapus/$1');
+
 
 //kelola data guru
 $routes->get('/guru', 'Data_guru::index');
@@ -62,5 +57,18 @@ $routes->post('/guru/update', 'Data_guru::update');
 $routes->get('guru/delete/(:num)', 'Data_guru::delete/$1');
 $routes->get('/guru/download_template', 'Data_guru::download_template');
 $routes->post('/guru/import_csv', 'Data_guru::import_csv');
+
+//download qr guru
+$routes->get('guru/generate_qr/(:num)', 'Data_guru::generateQR/$1');
+$routes->get('guru/download_qr/(:num)', 'Data_guru::downloadQR/$1');
+
+//download laporan
+$routes->get('/laporan/index', 'LaporanController::index', ['filter' => 'auth']);
+$routes->get('/laporan', 'LaporanController::index');
+$routes->post('/laporan/generate', 'LaporanController::generate');
+$routes->get('laporan/exportPdf', 'LaporanController::exportPdf');
+$routes->get('laporan/exportExcel', 'LaporanController::exportExcel');
+$routes->post('laporan/exportPdf', 'LaporanController::exportPdf');
+$routes->post('laporan/exportExcel', 'LaporanController::exportExcel');
 
 

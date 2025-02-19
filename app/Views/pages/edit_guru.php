@@ -13,4 +13,5 @@
     <input type="text" id="nuptk" name="nuptk" value="<?= esc($guru['nuptk']) ?>" required><br>
 
     <button type="submit">Update</button>
+    <button type="sumbit">Kembali</button>
 </form>

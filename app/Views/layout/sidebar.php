@@ -52,13 +52,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?= base_url('/pages/data_guru')?>" class="nav-link">
+                <a href="<?= base_url('#')?>" class="nav-link">
                   <i class="fas fa-chevron-right nav-icon"></i>
                   <p>Data Guru</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= base_url('/pages/data_siswa')?>" class="nav-link">
+                <a href="<?= base_url('/siswa/index')?>" class="nav-link">
                   <i class="fas fa-chevron-right nav-icon"></i>
                   <p>Data Siswa</p>
                 </a>
@@ -75,27 +75,45 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?= base_url('/pages/absensi_guru')?>" class="nav-link">
+                <a href="<?= base_url('#')?>" class="nav-link">
                   <i class="fas fa-chevron-right nav-icon"></i>
                   <p>Absensi Guru</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= base_url('/pages/absensi_siswa')?>" class="nav-link">
+                <a href="<?= base_url('absensi/index')?>" class="nav-link">
                   <i class="fas fa-chevron-right nav-icon"></i>
                   <p>Absensi Siswa</p>
                 </a>
               </li>
             </ul>
           </li>
+
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-qrcode"></i>
+              <i class="nav-icon fas fa-download"></i>
               <p>
-                Generate QR Code
+                Download
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?= base_url('laporan/index')?>" class="nav-link">
+                  <i class="fas fa-chevron-right nav-icon"></i>
+                  <p>Download Laporan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('/pages/absensi_siswa')?>" class="nav-link">
+                  <i class="nav-icon fas fa-qrcode"></i>
+                  <p>Download QR Code</p>
+                </a>
+              </li>
+            </ul>
           </li>
+
+
           <li class="nav-header">Manajemen Admin</li>
           <li class="nav-item">
             <a href="<?= base_url()?>/templates/gallery.html" class="nav-link">
@@ -110,6 +128,14 @@
               <i class="nav-icon fas fa-school"></i>
               <p>
                 Profil Sekolah
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('absensi/scan') ?>" class="nav-link">
+              <i class="nav-icon fas fa-clipboard-user"></i>
+              <p>
+                Presensi
               </p>
             </a>
           </li>

@@ -25,6 +25,7 @@
                     <input type="text" name="nuptk" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="sumbit">Kembali</button>
             </form>
         </div>
     </section>

@@ -2,169 +2,86 @@
 namespace App\Controllers;
 
 use App\Models\SiswaModel;
-use CodeIgniter\Controller;
+use App\Models\KelasModel;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 
-class Data_siswa extends Controller
+class Data_siswa extends BaseController
 {
+    protected $siswaModel;
+    protected $kelasModel;
+
+    public function __construct()
+    {
+        $this->siswaModel = new SiswaModel();
+        $this->kelasModel = new KelasModel();
+    }
+
     public function index()
     {
-        $model = new SiswaModel();
-        $data['siswa'] = $model->findAll(); // Ambil semua data siswa
+        $db = \Config\Database::connect();
+        $builder = $db->table('tb_siswa');
+        $builder->select('tb_siswa.*, kelas.kelas');
+        $builder->join('kelas', 'kelas.id_kelas = tb_siswa.id_kelas', 'left');
+        $query = $builder->get();
+    
+        $siswaModel = new SiswaModel();
+        $kelasModel = new KelasModel(); 
+    
+        $data['siswa'] = $query->getResultArray();
+        $data['kelas'] = $kelasModel->findAll(); 
+    
+        // Debugging: cek apakah $data['kelas'] berisi data
+        if (empty($data['kelas'])) {
+            dd('Kelas tidak ditemukan!', $data['kelas']);
+        }
+    
         return view('pages/data_siswa', $data);
     }
+    
 
     public function tambah()
     {
-        return view('pages/tambah_siswa');
-    }
-
-    public function simpan()
-    {
-        $model = new SiswaModel();
-        $model->save([
-            'nama' => $this->request->getPost('nama'),
-            'kelas' => $this->request->getPost('kelas'),
-            'email' => $this->request->getPost('email'),
-            'nisn' => $this->request->getPost('nisn'),
-            'nis' => $this->request->getPost('nis'),
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-        return redirect()->to(base_url('siswa'));
-    }
-
-    // 🔹 FORM EDIT
-    public function edit($id)
-    {
-        $model = new SiswaModel();
-        $data['siswa'] = $model->find($id);
-
-        return view('pages/edit_siswa', $data);
-    }
-
-    // 🔹 PROSES UPDATE
-    public function update()
-    {
-        $model = new SiswaModel();
-        $id = $this->request->getPost('id');
-
-        $model->update($id, [
-            'nama' => $this->request->getPost('nama'),
-            'kelas' => $this->request->getPost('kelas'),
-            'email' => $this->request->getPost('email'),
-            'nisn' => $this->request->getPost('nisn'),
-            'nis' => $this->request->getPost('nis'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ]);
+        $kelasModel = new \App\Models\KelasModel();
+        $data['kelas'] = $kelasModel->findAll(); 
+        if ($this->request->getMethod() === 'post') {
+            $dataSiswa = [
+                'nisn' => $this->request->getPost('nisn'),
+                'nama_siswa' => $this->request->getPost('nama_siswa'),
+                'id_kelas' => $this->request->getPost('id_kelas'), // Ubah dari 'kelas' ke 'id_kelas'
+                'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+                'no_hp' => $this->request->getPost('no_hp')
+            ];
     
-        return redirect()->to(base_url('siswa'))->with('success', 'Data berhasil diperbarui.');
-    }
-
-    public function delete($id)
-    {
-        $model = new SiswaModel();
-        $model->delete($id);
-        return redirect()->to('/siswa')->with('success', 'Data berhasil dihapus.');
-    }
-
-    // 🔹 UNDUH TEMPLATE CSV
-    public function download_template()
-    {   
-        $filename = "template_siswa.csv";
-        $csvData = "Nama,Kelas,Email,NISN,NIS\n"; // Header CSV
-        return $this->response
-            ->setHeader('Content-Type', 'text/csv')
-            ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->setBody($csvData);
-    }
-    
-    public function import_csv()
-    {
-        $model = new SiswaModel();
-        $file = $this->request->getFile('csv_file');
-    
-        if ($file->isValid() && !$file->hasMoved()) {
-            $filePath = $file->getTempName();
-            $file = fopen($filePath, "r");
-    
-            // Lewati baris pertama (header CSV)
-            fgetcsv($file, 1000, "\t");
-    
-            while (($data = fgetcsv($file, 1000, "\t")) !== FALSE) {
-                // Pastikan jumlah kolom sesuai
-                if (count($data) < 3) {
-                    continue; // Lewati baris yang tidak sesuai
-                }
-    
-                $siswaData = [
-                    'nama'       => $data[0],   
-                    'kelas'      => $data[1], // Email opsional
-                    'nisn'       => $data[2],
-                    'nis'        => $data[3],
-                    'email'      => null, // Email opsional
-                    'created_at' => date('Y-m-d H:i:s')
-                ];
-    
-                $model->insert($siswaData);
-            }
-    
-            fclose($file);
-            return redirect()->to(base_url('siswa'))->with('success', 'Data berhasil diimpor.');
+            $this->siswaModel->insert($dataSiswa);
+            return redirect()->to('/data_siswa')->with('success', 'Data siswa berhasil ditambahkan!');
         }
     
-        return redirect()->to(base_url('siswa'))->with('error', 'Gagal mengimpor file.');
+        return view('pages/tambah_siswa', $data);
     }
-    
-    public function generateQR($id)
+
+    public function edit($id_siswa)
     {
-        $model = new SiswaModel();
-        $siswa = $model->find($id);
-    
+        $siswa = $this->siswaModel->find($id_siswa);
+        $kelasModel = new \app\Models\KelasModel();
+        
         if (!$siswa) {
-            return redirect()->to(base_url('siswa'))->with('error', 'Data siswa tidak ditemukan.');
+            return redirect()->to('/data_siswa')->with('error', 'Siswa tidak ditemukan');
         }
-    
-        // Data QR hanya berisi NISN (bukan Nama)
-        $qrData = $siswa['nisn'];
-    
-        // Buat QR Code
-        $qrCode = QrCode::create($qrData)->setSize(300)->setMargin(10);
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-    
-        // Pastikan browser menampilkan gambar QR Code
-        return $this->response->setHeader('Content-Type', $result->getMimeType())
-                              ->setBody($result->getString());
-    }
-    
-    
-    public function downloadQR($id)
-    {
-        $model = new SiswaModel();
-        $siswa = $model->find($id);
-    
-        if (!$siswa) {
-            return redirect()->to(base_url('siswa'))->with('error', 'Data siswa tidak ditemukan.');
-        }
-    
-        // Data QR hanya berisi NISN
-        $qrData = $siswa['nisn'];
-    
-        // Buat QR Code
-        $qrCode = QrCode::create($qrData)->setSize(300)->setMargin(10);
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-    
-        // Nama file QR Code
-        $fileName = 'QR_' . $siswa['nisn'] . '.png';
-    
-        // Pastikan browser mendownload file QR Code
-        return $this->response
-            ->setHeader('Content-Type', $result->getMimeType())
-            ->setHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"')
-            ->setBody($result->getString());
-    }
-    
 
+        if ($this->request->getMethod() === 'post') {
+            $updateData = [
+                'nisn' => $this->request->getPost('nisn'),
+                'nama_siswa' => $this->request->getPost('nama_siswa'),
+                'id_kelas' => $this->request->getPost('id_kelas'), // Ubah dari 'kelas' ke 'id_kelas'
+                'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+                'no_hp' => $this->request->getPost('no_hp')
+            ];
+
+            $this->siswaModel->update($id_siswa, $updateData);
+            return redirect()->to('/data_siswa')->with('success', 'Data siswa berhasil diperbarui!');
+        }
+
+        return view('pages/edit_siswa', ['siswa' => $siswa, 'kelas' => $this->kelasModel->findAll()]);
+    }
 }
