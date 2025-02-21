@@ -44,6 +44,8 @@ $routes->get('/absensi', 'Absensi::index');
 $routes->get('/absensi/scan', 'Absensi::scan');
 $routes->post('absensi/prosesScan', 'Absensi::prosesScan');
 $routes->post('/absensi/saveScan', 'Absensi::saveScan');
+$routes->get('absensi/edit/(:num)', 'Absensi::edit/$1');
+$routes->post('absensi/update', 'Absensi::update');
 $routes->get('absensi/hapus/(:num)', 'Absensi::hapus/$1');
 
 
@@ -64,11 +66,19 @@ $routes->get('guru/download_qr/(:num)', 'Data_guru::downloadQR/$1');
 
 //download laporan
 $routes->get('/laporan/index', 'LaporanController::index', ['filter' => 'auth']);
-$routes->get('/laporan', 'LaporanController::index');
 $routes->post('/laporan/generate', 'LaporanController::generate');
 $routes->get('laporan/exportPdf', 'LaporanController::exportPdf');
 $routes->get('laporan/exportExcel', 'LaporanController::exportExcel');
 $routes->post('laporan/exportPdf', 'LaporanController::exportPdf');
 $routes->post('laporan/exportExcel', 'LaporanController::exportExcel');
+
+//data admin
+$routes->get('admin/index', 'AdminController::index');               // List admin
+$routes->get('admin/create', 'AdminController::create');         // Form tambah admin
+$routes->post('admin/store', 'AdminController::store');          // Proses tambah admin
+$routes->get('admin/edit/(:num)', 'AdminController::edit/$1');   // Form edit admin
+$routes->post('admin/update/(:num)', 'AdminController::update/$1'); // Proses update admin
+$routes->get('admin/delete/(:num)', 'AdminController::delete/$1');  // Hapus admin
+
 
 

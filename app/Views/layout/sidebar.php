@@ -9,13 +9,14 @@
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="<?= base_url()?>/templates/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
-        </div>
+          <div class="image">
+              <i class="fas fa-user-circle fa-2x"></i> <!-- Icon Font Awesome -->
+          </div>
+          <div class="info">
+              <a href="#" class="d-block"><?= session('nama') ?? 'Guest' ?></a>
+          </div>
       </div>
+
 
       <!-- SidebarSearch Form -->
       <div class="form-inline">
@@ -66,7 +67,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a class="nav-link">
               <i class="nav-icon fas fa-clipboard-list"></i>
               <p>
                 Data Absensi
@@ -90,7 +91,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a class="nav-link">
               <i class="nav-icon fas fa-download"></i>
               <p>
                 Download
@@ -116,7 +117,7 @@
 
           <li class="nav-header">Manajemen Admin</li>
           <li class="nav-item">
-            <a href="<?= base_url()?>/templates/gallery.html" class="nav-link">
+            <a href="<?= base_url('admin/index')?>" class="nav-link">
               <i class="nav-icon far fa-user"></i>
               <p>
                 Data Admin

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\AbsensiModel;
 use App\Models\SiswaModel;
+use App\Models\KeteranganModel;
 use App\Models\KelasModel;
 use CodeIgniter\Controller;
 
@@ -62,16 +63,18 @@ class Absensi extends Controller
     
         $id_siswa = $siswa['id_siswa'];
         $tanggal_hari_ini = date('Y-m-d');
+        $waktu_hari_ini = date('H:i:s');
     
         // Cek jumlah absensi hari ini
-        $jumlah_absensi = $this->absensiModel->hitungAbsensiHarian($id_siswa, $tanggal_hari_ini);
+        $jumlah_absensi = $this->absensiModel->hitungAbsensiHarian($id_siswa, $tanggal_hari_ini, $waktu_hari_ini);
     
-        if ($jumlah_absensi >= 2) {
+        if ($jumlah_absensi >= 1) {
             return $this->response->setJSON([
-                'keterangan' => 'error',
-                'message' => 'Anda sudah absen 2 kali hari ini, absensi ditolak!'
+                'keterangan' => 'sudah_absen',
+                'message' => 'Anda sudah absen hari ini, absensi ditolak!'
             ]);
         }
+        
     
         // Ambil ID keterangan default (misalnya "Hadir")
         $id_keterangan = $this->absensiModel->getIdKeterangan('Hadir');
@@ -79,11 +82,15 @@ class Absensi extends Controller
         if (!$id_keterangan) {
             return $this->response->setJSON(['keterangan' => 'error', 'message' => 'Kategori absensi tidak ditemukan.']);
         }
+
+        date_default_timezone_set('Asia/Jakarta');
     
         // Simpan absensi
         $data = [
             'id_siswa' => $id_siswa,
             'waktu_absensi' => date('Y-m-d H:i:s'),
+            'tanggal'=> date('Y-m-d'),
+            'waktu' => date('H:i:s'),
             'id_keterangan' => $id_keterangan,
         ];
         $this->absensiModel->insert($data);
@@ -93,20 +100,57 @@ class Absensi extends Controller
             'message' => 'Absensi berhasil!',
             'siswa' => $siswa
         ]);
+    }           
+    
+    
+    public function edit($id)
+    {
+        $absensiModel = new AbsensiModel();
+        $keteranganModel = new KeteranganModel();
+    
+        // JOIN absensi dan siswa berdasarkan NISN
+        $absensi = $absensiModel
+            ->select('tb_absensi.*, tb_siswa.nama_siswa')
+            ->join('tb_siswa', 'tb_siswa.nisn = tb_absensi.nisn')
+            ->where('tb_absensi.id_absensi', $id)
+            ->first();
+    
+        $keterangan = $keteranganModel->findAll();
+    
+        if (!$absensi) {
+            return redirect()->to('/absensi')->with('error', 'Data absensi tidak ditemukan');
+        }
+    
+        return view('absensi/edit', [
+            'absensi' => $absensi,
+            'keterangan' => $keterangan
+        ]);
     }
     
-    public function update($id)
+    
+    
+    public function update()
     {
+        $absensiModel = new AbsensiModel();
+    
+        $id = $this->request->getPost('id_absensi');
         $id_keterangan = $this->request->getPost('id_keterangan');
-        $this->absensiModel->update($id, ['id_keterangan' => $id_keterangan]);
-
-        return redirect()->to('/absensi')->with('pesan', 'Keterangan absensi berhasil diperbarui.');
+    
+        $absensiModel->update($id, [
+            'id_keterangan' => $id_keterangan
+        ]);
+    
+        return redirect()->to('/absensi')->with('success', 'Data absensi berhasil diperbarui');
     }
+    
 
-    public function hapus($id)
+    public function hapus($id) 
     {
         $this->absensiModel->delete($id);
-        return redirect()->to(base_url('absensi'))->with('success', 'Data berhasil dihapus');
-    }    
+        session()->setFlashdata('pesan', 'Data absensi berhasil dihapus!');
+        return redirect()->to('absensi');
+    }
+
+    
     
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\AdminModel;
 use CodeIgniter\Controller;
 
@@ -22,13 +23,14 @@ class Admin_login extends Controller
         $admin = $model->where('username', $username)->first();
     
         if ($admin) {
-            if (password_verify($password, $admin['password'])) { // GUNAKAN password_verify()
+            if (password_verify($password, $admin['password'])) { // Verifikasi password
                 $session->set([
                     'logged_in' => true,
                     'admin_id' => $admin['id_admin'], // Sesuaikan primary key di tabel
-                    'username' => $admin['username']
+                    'username' => $admin['username'],
+                    'nama' => $admin['nama'] // Tambahkan nama admin ke session
                 ]);
-                return redirect()->to(base_url('pages/dashboard')); 
+                return redirect()->to(base_url('pages/dashboard')); // Arahkan ke halaman admin utama
             } else {
                 $session->setFlashdata('error', 'Password salah!');
                 return redirect()->to(base_url('pages/admin_login'));

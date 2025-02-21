@@ -90,7 +90,8 @@
                             <th>NISN</th>
                             <th>Nama Siswa</th>
                             <th>Kelas</th>
-                            <th>Waktu Absensi</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
                             <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
@@ -104,16 +105,14 @@
                                 <td><?= esc($a['nisn']); ?></td>
                                 <td><?= esc($a['nama_siswa']); ?></td>
                                 <td><?= esc($a['kelas']); ?></td>
-                                <td><?= esc($a['waktu_absensi']); ?></td>
+                                <td><?= esc($a['tanggal']); ?></td>
+                                <td><?= esc($a['waktu']); ?></td>
                                 <td><?= esc($a['keterangan']); ?></td>
                                 <td>
                                     <!-- Tombol Edit -->
-                                    <button type="button" class="btn btn-warning btn-edit" 
-                                        data-id="<?= $a['id_absensi'] ?>" 
-                                        data-keterangan="<?= $a['id_keterangan'] ?>" 
-                                        data-bs-toggle="modal" data-bs-target="#editModal">
+                                    <a href="<?= base_url('absensi/edit/' . $a['id_absensi']) ?>" class="btn btn-warning">
                                         Edit
-                                    </button>
+                                    </a>
                                     <!-- Tombol Hapus -->
                                     <a href="<?= base_url('absensi/hapus/' . $a['id_absensi']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus absensi ini?')">
                                         <i class="fas fa-trash"></i> Hapus
@@ -122,7 +121,7 @@
                             </tr>
 
                             <!-- Modal Edit -->
-                            <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal fade" id="editModal<?= $a['id_absensi'] ?>" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -131,9 +130,9 @@
                                         </div>
                                         <form action="<?= base_url('absensi/update') ?>" method="POST">
                                             <div class="modal-body">
-                                                <input type="hidden" name="id_absensi" id="id_absensi">
+                                                <input type="hidden" name="id_absensi" value="<?= $a['id_absensi'] ?>">
                                                 <label for="id_keterangan">Keterangan:</label>
-                                                <select name="id_keterangan" id="id_keterangan" class="form-control">
+                                                <select name="id_keterangan" class="form-control">
                                                 <?php if (!empty($keterangan)): ?>
                                                     <?php foreach ($keterangan as $ket): ?>
                                                         <option value="<?= $ket['id'] ?>" <?= $ket['id'] == $a['id_keterangan'] ? 'selected' : '' ?>>

@@ -23,7 +23,7 @@ class Siswa extends BaseController
     {
         
         $model = new SiswaModel();
-        $data['siswa'] = $model->findAll();
+        $data['siswa'] = $this->siswaModel->findAll();
         $kelas = $this->request->getGet('kelas');
         $data = [
             'title' => 'Daftar Siswa',
@@ -80,7 +80,7 @@ class Siswa extends BaseController
             'siswa' => $this->siswaModel->find($id),
             'kelas' => $this->kelasModel->table('tb_kelas')->findAll()
         ];
-        return view('siswa/index', $data);
+        return view('siswa/edit', $data);
     }
 
     public function update($id)
@@ -107,7 +107,7 @@ class Siswa extends BaseController
         return redirect()->to('/siswa');
     }
 
-    public function hapus($id)
+    public function hapus($id) 
     {
         $this->siswaModel->delete($id);
         session()->setFlashdata('pesan', 'Data siswa berhasil dihapus!');
