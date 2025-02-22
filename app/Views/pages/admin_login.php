@@ -1,72 +1,121 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin</title>
-    
-    <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    
-    <!-- Google Font -->
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
     <style>
-        body {
-            background-color: #f8f9fa;
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
         }
-        .login-container {
-            max-width: 450px;
-            margin: 50px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        
+        .gradient-background {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
         }
-        .logo-text {
+
+        .container {
+            max-width: 1600px;
+            margin: auto;
+        }
+
+        .logo_MA {
             font-family: "Playfair Display", serif;
             font-weight: 700;
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 1.5rem;
         }
-        button{
-            gap: 10px;
-            margin: 5px;
+        
+        .card {
+            margin: 0 auto;
+            max-height: 90vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo-img {
+            width: 200px;
+            height: auto;
+        }
+
+        .img-container {
+            max-height: 95vh;
+            overflow: hidden;
+        }
+        
+        .form-container {
+            max-height: 90vh;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
+    <div class="gradient-background">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xxl-11">
+                    <div class="card border-light-subtle">
+                        <div class="row g-0">
+                            <div class="col-12 col-md-7 img-container">
+                                <img class="img-fluid rounded-start w-100 h-100 object-fit-cover" loading="lazy" src="<?= base_url()?>/templates/dist/img/fotogtk.jpg">
+                            </div>
+                            <div class="col-12 col-md-5 d-flex align-items-center justify-content-center form-container">
+                                <div class="col-12 col-lg-11 col-xl-10">
+                                    <div class="card-body p-3 p-md-4">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="mb-4">
+                                                    <div class="text-center mb-3">
+                                                        <a href="#!">
+                                                            <img src="<?= base_url()?>/templates/dist/img/logo_MA.png" class="logo-img" alt="Logo MA">
+                                                        </a>
+                                                    </div>
+                                                    <h4 class="text-center logo_MA">Presensi Madrasah Aliyah Trisula</h4>
+                                                </div>
+                                            </div>
+                                        </div>
 
-<div class="container">
-    <div class="login-container">
-        <div class="text-center">
-            <img src="<?= base_url()?>/templates/dist/img/logo_MA.png" alt="Logo MA" width="150">
-            <h4 class="logo-text">Presensi Madrasah Aliyah Trisula</h4>
+                                        <?php if (session()->getFlashdata('error')): ?>
+                                            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+                                        <?php endif; ?>
+
+                                        <form action="<?= base_url('/pages/admin_login/prosesLogin') ?>" method="POST">
+                                            <div class="row gy-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating mb-3">
+                                                        <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username" required>
+                                                        <label for="username" class="form-label">Username</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating mb-3">
+                                                        <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password" required>
+                                                        <label for="password" class="form-label">Password</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="d-grid gap-2">
+                                                        <button class="btn btn-dark btn-lg" type="submit">Login</button>
+                                                        <a href="<?= base_url('/') ?>" class="btn btn-outline-dark btn-lg">Absensi</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Menampilkan pesan error jika login gagal -->
-        <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
-        <?php endif; ?>
-
-        <form action="<?= base_url('/pages/admin_login/prosesLogin') ?>" method="POST">
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-            <button class="btn btn-primary mt-3" onclick="window.location.href='<?= base_url('/') ?>'">
-            Absensi
-            </button>        
-        </form>
     </div>
-</div>
-
 </body>
 </html>

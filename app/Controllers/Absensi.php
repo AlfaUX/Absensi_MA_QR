@@ -89,7 +89,7 @@ class Absensi extends Controller
         $data = [
             'id_siswa' => $id_siswa,
             'waktu_absensi' => date('Y-m-d H:i:s'),
-            'tanggal'=> date('Y-m-d'),
+            'tanggal'=> date('Y-m-d', strtotime(date('d-m-Y'))), // Mengubah format
             'waktu' => date('H:i:s'),
             'id_keterangan' => $id_keterangan,
         ];
@@ -125,8 +125,18 @@ class Absensi extends Controller
             'absensi' => $absensi,
             'keterangan' => $keterangan
         ]);
+        
     }
     
+    public function filterAttendance()
+    {
+        $selectedDate = $this->request->getPost('selected_date'); // Ambil dari input form
+
+        $attendanceData = $this->attendanceModel->where('tanggal', $selectedDate)->findAll();
+
+        return view('pages/attendance', ['attendanceData' => $attendanceData, 'selectedDate' => $selectedDate]);
+    }
+
     
     
     public function update()

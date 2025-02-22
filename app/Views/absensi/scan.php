@@ -6,87 +6,194 @@
     <title>Scan QR Code - Absensi</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: white;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
         #reader {
-            border: 5px solid #0d6efd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(13, 110, 253, 0.2);
         }
-        .col-md-6 {
-            border: 3px solid #fd650d;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+        .scanner-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
         }
-        .col-md-4, .col-md-2 {
-            border: 3px solid #198754;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            padding: 15px;
+
+        .scanner-header {
+            position: relative;
+            margin-bottom: 2rem;
         }
-        .tips-box, .rules-box {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
+
+        .scan-type-select {
+            position: absolute;
+            top: 0;
+            right: 0;
         }
-        .absensi-result {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 15px;
+
+        .info-card {
+            padding: 1.5rem;
+            height: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .info-card h5 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-card ul {
+            padding-left: 1.2rem;
+        }
+
+        .info-card li {
+            margin-bottom: 0.8rem;
+            color: #34495e;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
             text-align: center;
+        }
+
+        .result-card h5 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .admin-btn {
+            background: #3498db;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .form-select {
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            padding: 0.5rem 1rem;
+        }
+
+        #scan-result {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Animated scanner border */
+        @keyframes scan {
+            0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4); }
+            100% { box-shadow: 0 0 0 20px rgba(13, 110, 253, 0); }
+        }
+
+        #reader {
+            animation: scan 1.5s infinite;
         }
     </style>
 </head>
-<body class="container py-4">
-    <div class="d-flex justify-content-end mb-4">
-        <button class="btn btn-primary" onclick="window.location.href='<?= base_url('/pages/admin_login') ?>'">
-            Login Admin
-        </button>
-    </div>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="tips-box">
-                <h5>Tips Presensi</h5>
-                <ul>
-                    <li>Pastikan QR Code terlihat jelas.</li>
-                    <li>Gunakan pencahayaan yang cukup saat scan.</li>
-                    <li>Jaga lensa kamera tetap bersih.</li>
-                    <li>Hindari pantulan cahaya di QR Code.</li>
-                    <li>Gunakan jaringan internet yang stabil.</li>
-                </ul>
-            </div>
-            <div class="rules-box">
-                <h5>Peraturan Presensi</h5>
-                <ul>
-                    <li>Absensi datang maksimal pukul 07:00.</li>
-                    <li>Absensi pulang dilakukan setelah jam belajar selesai.</li>
-                    <li>Jangan meminjamkan QR Code pribadi.</li>
-                    <li>QR Code yang rusak harus segera diganti.</li>
-                    <li>Setiap keterlambatan dicatat dalam sistem.</li>
-                </ul>
-            </div>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-end mb-4">
+            <button class="btn admin-btn text-white" onclick="window.location.href='<?= base_url('/pages/admin_login') ?>'">
+                <i class="fas fa-user-shield me-2"></i>Login Admin
+            </button>
         </div>
 
-        <div class="col-md-6 text-center">
-            <select class="form-select w-auto d-inline-block" id="absensi-type">
-                <option value="datang">Datang</option>
-                <option value="pulang">Pulang</option>
-            </select>
-            <h2 class="mb-3" >Scan QR Code untuk Absensi</h2>
-            <div id="reader" style="width: 300px; margin: auto;"></div>
-            <p id="scan-result" class="mt-3">Arahkan kamera ke QR Code</p>
-        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card info-card">
+                    <h5><i class="fas fa-lightbulb me-2"></i>Tips Presensi</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Pastikan QR Code terlihat jelas</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Gunakan pencahayaan yang cukup</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Jaga lensa kamera tetap bersih</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Hindari pantulan cahaya</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Gunakan jaringan internet stabil</li>
+                    </ul>
+                    <h5><i class="fas fa-clipboard-list me-2"></i>Peraturan Presensi</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-exclamation-circle text-warning me-2"></i>Maksimal datang pukul 07:00</li>
+                        <li><i class="fas fa-exclamation-circle text-warning me-2"></i>Absen pulang setelah jam belajar</li>
+                        <li><i class="fas fa-exclamation-circle text-warning me-2"></i>Dilarang meminjamkan QR Code</li>
+                        <li><i class="fas fa-exclamation-circle text-warning me-2"></i>Ganti QR Code yang rusak</li>
+                        <li><i class="fas fa-exclamation-circle text-warning me-2"></i>Keterlambatan dicatat sistem</li>
+                    </ul>
+                </div>
+            </div>
 
-        <div class="col-md-2" id="scan-result-container">
-            <div class="absensi-result">
-                <h5>Hasil Absensi</h5>
-                <p><strong>Nama:</strong> <span id="result-nama">-</span></p>
-                <p><strong>NISN:</strong> <span id="result-nisn">-</span></p>
-                <p><strong>Kelas:</strong> <span id="result-kelas">-</span></p>
-                <p><strong>Keterangan:</strong> <span id="result-keterangan">-</span></p>
+            <div class="col-md-6">
+                <div class="card scanner-section">
+                    <div class="scanner-header">
+                        <div class="scan-type-select">
+                            <select class="form-select" id="absensi-type">
+                                <option value="datang">Datang</option>
+                                <option value="pulang">Pulang</option>
+                            </select>
+                        </div>
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-qrcode me-2"></i>Scan QR Code
+                        </h2>
+                    </div>
+                    <div id="reader"></div>
+                    <p id="scan-result" class="text-center mt-3">
+                        <i class="fas fa-camera me-2"></i>Arahkan kamera ke QR Code
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="card result-card">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Hasil Absensi</h5>
+                    <div class="result-info">
+                        <p class="mb-2"><strong>Nama:</strong><br><span id="result-nama">-</span></p>
+                        <p class="mb-2"><strong>NISN:</strong><br><span id="result-nisn">-</span></p>
+                        <p class="mb-2"><strong>Kelas:</strong><br><span id="result-kelas">-</span></p>
+                        <p class="mb-0"><strong>Keterangan:</strong><br><span id="result-keterangan">-</span></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -94,10 +201,9 @@
     <audio id="success-audio" src="<?= base_url('audio/absensi_berhasil.mp3') ?>"></audio>
     <audio id="error-audio" src="<?= base_url('audio/sudah_absen.wav') ?>"></audio>
 
-
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-            console.log("Scanned QR: ", decodedText);  // Debug QR code hasil scan
+            console.log("Scanned QR: ", decodedText);
 
             const absensiType = document.getElementById('absensi-type').value;
 
@@ -110,27 +216,22 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);  // Debug respon server
-
-                const resultContainer = document.getElementById('scan-result-container');
+                console.log(data);
 
                 if (data.keterangan === 'success') {
-                    resultContainer.innerHTML = `
-                        <h4>Data Absensi</h4>
-                        <p><strong>Nama:</strong> ${data.siswa.nama_siswa}</p>
-                        <p><strong>NISN:</strong> ${data.siswa.nisn}</p>
-                        <p><strong>Kelas:</strong> ${data.siswa.id_kelas}</p>
-                        <p><strong>Keterangan:</strong> ${data.message}</p>
-                    `;
+                    document.getElementById('result-nama').textContent = data.siswa.nama_siswa;
+                    document.getElementById('result-nisn').textContent = data.siswa.nisn;
+                    document.getElementById('result-kelas').textContent = data.siswa.id_kelas;
+                    document.getElementById('result-keterangan').textContent = data.message;
                     document.getElementById('success-audio').play();
                 } else {
-                    resultContainer.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                    document.getElementById('result-keterangan').textContent = data.message;
                     document.getElementById('error-audio').play();
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('scan-result-container').innerHTML = `<p class="text-danger">Gagal memproses scan.</p>`;
+                document.getElementById('result-keterangan').textContent = 'Gagal memproses scan.';
             });
         }
 
@@ -141,6 +242,5 @@
             onScanSuccess
         );
     </script>
-    
 </body>
 </html>

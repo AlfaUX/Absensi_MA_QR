@@ -30,148 +30,155 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-    <?= $this->include('layout/navbar')?>
-    <?= $this->include('layout/sidebar')?>
-    
-    <?= $this->extend('layout/main') ?>
-    <?= $this->section('content') ?>
+        <?= $this->include('layout/navbar')?>
+        <?= $this->include('layout/sidebar')?>
 
-    <div class="content-wrapper">
-        <div class="container-fluid">
-            <div class="content">
-                <h2>Data Absensi</h2>
-
-                <!-- Pesan Flashdata -->
-                <?php if (session()->getFlashdata('pesan')) : ?>
-                    <div class="alert alert-success">
-                        <?= session()->getFlashdata('pesan'); ?>
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Data Absensi Siswa</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="<?= base_url('pages/dashboard') ?>" >Home</a></li>
+                        <li class="breadcrumb-item active">Data Absensi Siswa</li>
+                        </ol>
                     </div>
-                <?php endif; ?>
-
-                <!-- Tombol Scan QR Code -->
-                <a href="<?= base_url('absensi/scan') ?>" class="btn btn-success mb-3">
-                    <i class="fas fa-qrcode"></i> Scan QR Code
-                </a>
-
-                <!-- Filter Data -->
-                <div class="card p-3 bg-purple text-white">
-                    <h4>Filter</h4>
-                    <form method="GET" action="<?= base_url('absensi') ?>">
-                        <div class="row">
-                            <!-- Filter Kelas -->
-                            <div class="col-md-6">
-                                <label for="kelas">Pilih Kelas:</label>
-                                <select name="kelas" id="kelas" class="form-control">
-                                    <option value="">Semua Kelas</option>
-                                    <?php foreach ($kelas as $k): ?>
-                                        <option value="<?= esc($k['id_kelas']) ?>" <?= (isset($_GET['kelas']) && $_GET['kelas'] == $k['id_kelas']) ? 'selected' : '' ?>>
-                                            <?= esc($k['kelas']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <!-- Filter Tanggal -->
-                            <div class="col-md-6">
-                                <label for="tanggal">Pilih Tanggal:</label>
-                                <input type="date" name="tanggal" id="tanggal" class="form-control" value="<?= isset($_GET['tanggal']) ? esc($_GET['tanggal']) : '' ?>">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-light mt-3">Filter</button>
-                    </form>
+                    </div>
                 </div>
+            </div>
+            <section class="content">
+                
+                <div class="container-fluid">
+                    <?php if (session()->getFlashdata('pesan')) : ?>
+                        <div class="alert alert-success">
+                            <?= session()->getFlashdata('pesan'); ?>
+                        </div>
+                    <?php endif; ?>
 
-                <!-- Tabel Data Absensi -->
-                <table class="table mt-4 table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>No</th>
-                            <th>NISN</th>
-                            <th>Nama Siswa</th>
-                            <th>Kelas</th>
-                            <th>Tanggal</th>
-                            <th>Waktu</th>
-                            <th>Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($absensi) && is_array($absensi)) : ?>
-                            <?php $no = 1; ?>
-                            <?php foreach ($absensi as $a) : ?>
-                            <tr>
-                                <td><?= $no++; ?></td>
-                                <td><?= esc($a['nisn']); ?></td>
-                                <td><?= esc($a['nama_siswa']); ?></td>
-                                <td><?= esc($a['kelas']); ?></td>
-                                <td><?= esc($a['tanggal']); ?></td>
-                                <td><?= esc($a['waktu']); ?></td>
-                                <td><?= esc($a['keterangan']); ?></td>
-                                <td>
-                                    <!-- Tombol Edit -->
-                                    <a href="<?= base_url('absensi/edit/' . $a['id_absensi']) ?>" class="btn btn-warning">
-                                        Edit
-                                    </a>
-                                    <!-- Tombol Hapus -->
-                                    <a href="<?= base_url('absensi/hapus/' . $a['id_absensi']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus absensi ini?')">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </a>
-                                </td>
-                            </tr>
+                    <!-- Tombol Scan QR Code -->
+                    <a href="<?= base_url('absensi/scan') ?>" class="btn btn-success mb-3">
+                        <i class="fas fa-qrcode"></i> Scan QR Code
+                    </a>
 
-                            <!-- Modal Edit -->
-                            <div class="modal fade" id="editModal<?= $a['id_absensi'] ?>" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Edit Keterangan</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form action="<?= base_url('absensi/update') ?>" method="POST">
-                                            <div class="modal-body">
-                                                <input type="hidden" name="id_absensi" value="<?= $a['id_absensi'] ?>">
-                                                <label for="id_keterangan">Keterangan:</label>
-                                                <select name="id_keterangan" class="form-control">
-                                                <?php if (!empty($keterangan)): ?>
-                                                    <?php foreach ($keterangan as $ket): ?>
-                                                        <option value="<?= $ket['id'] ?>" <?= $ket['id'] == $a['id_keterangan'] ? 'selected' : '' ?>>
-                                                            <?= esc($ket['keterangan']) ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                <?php else: ?>
-                                                    <option value="">Data tidak ditemukan</option>
-                                                <?php endif; ?>
-                                                </select>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                    <!-- Filter Data -->
+                    <div class="card p-3 bg-purple text-white">
+                        <h4>Filter</h4>
+                        <form method="GET" action="<?= base_url('absensi') ?>">
+                            <div class="row">
+                                <!-- Filter Kelas -->
+                                <div class="col-md-6">
+                                    <label for="kelas">Pilih Kelas:</label>
+                                    <select name="kelas" id="kelas" class="form-control">
+                                        <option value="">Semua Kelas</option>
+                                        <?php foreach ($kelas as $k): ?>
+                                            <option value="<?= esc($k['id_kelas']) ?>" <?= (isset($_GET['kelas']) && $_GET['kelas'] == $k['id_kelas']) ? 'selected' : '' ?>>
+                                                <?= esc($k['kelas']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <!-- Filter Tanggal -->
+                                <div class="col-md-6">
+                                    <label for="tanggal">Pilih Tanggal:</label>
+                                    <input type="date" name="tanggal" id="tanggal" class="form-control" value="<?= isset($_GET['tanggal']) ? esc($_GET['tanggal']) : '' ?>">
                                 </div>
                             </div>
 
-                            <?php endforeach; ?>
-                            <?php else : ?>
+                            <button type="submit" class="btn btn-light mt-3">Filter</button>
+                        </form>
+                    </div>
+
+                    <!-- Tabel Data Absensi -->
+                    <table class="table mt-4 table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>No</th>
+                                <th>NISN</th>
+                                <th>Nama Siswa</th>
+                                <th>Kelas</th>
+                                <th>Tanggal</th>
+                                <th>Waktu</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($absensi) && is_array($absensi)) : ?>
+                                <?php $no = 1; ?>
+                                <?php foreach ($absensi as $a) : ?>
                                 <tr>
-                                    <td colspan="7">Data absensi tidak tersedia.</td>
+                                    <td><?= $no++; ?></td>
+                                    <td><?= esc($a['nisn']); ?></td>
+                                    <td><?= esc($a['nama_siswa']); ?></td>
+                                    <td><?= esc($a['kelas']); ?></td>
+                                    <td><?= esc($a['tanggal']); ?></td>
+                                    <td><?= esc($a['waktu']); ?></td>
+                                    <td><?= esc($a['keterangan']); ?></td>
+                                    <td>
+                                        <!-- Tombol Edit -->
+                                        <a href="<?= base_url('absensi/edit/' . $a['id_absensi']) ?>" class="btn btn-warning">
+                                            Edit
+                                        </a>
+                                        <!-- Tombol Hapus -->
+                                        <a href="<?= base_url('absensi/hapus/' . $a['id_absensi']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus absensi ini?')">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </a>
+                                    </td>
                                 </tr>
-                            <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+
+                                <!-- Modal Edit -->
+                                <div class="modal fade" id="editModal<?= $a['id_absensi'] ?>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Keterangan</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="<?= base_url('absensi/update') ?>" method="POST">
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="id_absensi" value="<?= $a['id_absensi'] ?>">
+                                                    <label for="id_keterangan">Keterangan:</label>
+                                                    <select name="id_keterangan" class="form-control">
+                                                    <?php if (!empty($keterangan)): ?>
+                                                        <?php foreach ($keterangan as $ket): ?>
+                                                            <option value="<?= $ket['id'] ?>" <?= $ket['id'] == $a['id_keterangan'] ? 'selected' : '' ?>>
+                                                                <?= esc($ket['keterangan']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <option value="">Data tidak ditemukan</option>
+                                                    <?php endif; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan="7">Data absensi tidak tersedia.</td>
+                                    </tr>
+                                <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </section>
         </div>
+
+        <!-- Footer -->
+        <?= $this->include('layout/footer')?>
+        <!-- ./wrapper -->
     </div>
-
-
-
-    <?= $this->endSection() ?>
-
-    <!-- Footer -->
-    <?= $this->include('layout/footer')?>
-    <!-- ./wrapper -->
-
     <!-- jQuery -->
 
     <script>

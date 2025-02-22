@@ -20,9 +20,7 @@ $routes->get('/logout', 'Admin_login::logout');
 
 // Dashboard (Proteksi dengan Filter Auth)
 $routes->get('/pages/dashboard', 'Dashboard::index', ['filter' => 'auth']); 
-$routes->get('/pages/data_guru', 'Data_guru::index', ['filter' => 'auth']); 
 $routes->get('/siswa/index', 'Siswa::index', ['filter' => 'auth']); 
-$routes->get('/pages/absensi_guru', 'Absensi_guru::index', ['filter' => 'auth']); 
 $routes->get('/pages/absensi_siswa', 'Absensi_siswa::index', ['filter' => 'auth']); 
 
 /// Kelola Data Siswa
@@ -48,22 +46,6 @@ $routes->get('absensi/edit/(:num)', 'Absensi::edit/$1');
 $routes->post('absensi/update', 'Absensi::update');
 $routes->get('absensi/hapus/(:num)', 'Absensi::hapus/$1');
 
-
-//kelola data guru
-$routes->get('/guru', 'Data_guru::index');
-$routes->get('/guru/tambah', 'Data_guru::tambah');
-$routes->post('/guru/simpan', 'Data_guru::simpan');
-$routes->post('/guru/import_csv', 'Data_guru::import_csv');
-$routes->get('/guru/edit/(:num)', 'Data_guru::edit/$1'); 
-$routes->post('/guru/update', 'Data_guru::update');
-$routes->get('guru/delete/(:num)', 'Data_guru::delete/$1');
-$routes->get('/guru/download_template', 'Data_guru::download_template');
-$routes->post('/guru/import_csv', 'Data_guru::import_csv');
-
-//download qr guru
-$routes->get('guru/generate_qr/(:num)', 'Data_guru::generateQR/$1');
-$routes->get('guru/download_qr/(:num)', 'Data_guru::downloadQR/$1');
-
 //download laporan
 $routes->get('/laporan/index', 'LaporanController::index', ['filter' => 'auth']);
 $routes->post('/laporan/generate', 'LaporanController::generate');
@@ -73,12 +55,17 @@ $routes->post('laporan/exportPdf', 'LaporanController::exportPdf');
 $routes->post('laporan/exportExcel', 'LaporanController::exportExcel');
 
 //data admin
-$routes->get('admin/index', 'AdminController::index');               // List admin
+$routes->get('admin/index', 'AdminController::index', ['filter' => 'auth']);               // List admin
 $routes->get('admin/create', 'AdminController::create');         // Form tambah admin
 $routes->post('admin/store', 'AdminController::store');          // Proses tambah admin
 $routes->get('admin/edit/(:num)', 'AdminController::edit/$1');   // Form edit admin
 $routes->post('admin/update/(:num)', 'AdminController::update/$1'); // Proses update admin
 $routes->get('admin/delete/(:num)', 'AdminController::delete/$1');  // Hapus admin
+
+//profil sekolah
+$routes->get('admin/profil_sekolah/index', 'ProfilSekolahController::index', ['filter' => 'auth']);
+$routes->get('admin/profil_sekolah/edit', 'ProfilSekolahController::edit');
+$routes->post('admin/profil_sekolah/update', 'ProfilSekolahController::update');
 
 
 

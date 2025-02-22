@@ -30,99 +30,103 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-    <?= $this->include('layout/navbar')?>
-    <?= $this->include('layout/sidebar')?>
-    
-    <?= $this->extend('layout/main') ?>
-    <?= $this->section('content') ?>
-    <div class="content-wrapper">
-        <div class="container-fluid">
-
-            <div class="content">
-                <h2>Daftar Siswa</h2>
-        
-                <!-- Pesan Flashdata -->
-                <?php if (session()->getFlashdata('pesan')) : ?>
-                    <div class="alert alert-success">
-                        <?= session()->getFlashdata('pesan'); ?>
+        <?= $this->include('layout/navbar')?>
+        <?= $this->include('layout/sidebar')?>
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Data Siswa</h1>
+                        </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Data Siswa</li>
+                        </ol>
                     </div>
-                <?php endif; ?>
-        
-                <!-- Tombol Tambah Siswa -->
-                <a href="<?= base_url('siswa/tambah') ?>" class="btn btn-primary mb-3">
-                    <i class="fas fa-plus"></i> Tambah Data Siswa
-                </a>
-        
-                <!-- Filter Data -->
-                <div class="card p-3 bg-purple text-white">
-                    <h4>Filter</h4>
-                    <div class="mb-2">
-                        <label>Kelas:</label>
-                        <div class="btn-group">
-                            <a href="<?= base_url('siswa') ?>" class="btn btn-light <?= empty($_GET['kelas']) ? 'active' : '' ?>">Semua</a>
-                            <?php foreach ($kelas as $k): ?>
-                                <a href="<?= base_url('siswa?kelas=' . urlencode($k['kelas'])) ?>" 
-                                class="btn btn-light <?= (isset($_GET['kelas']) && $_GET['kelas'] == $k['kelas']) ? 'active' : '' ?>">
-                                    <?= $k['kelas'] ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
                     </div>
                 </div>
-        
-                <!-- Tabel Data Siswa -->
-                <table class="table mt-4 table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>No</th>
-                            <th>NISN</th>
-                            <th>Nama Siswa</th>
-                            <th>Kelas</th>
-                            <th>Jenis Kelamin</th>
-                            <th>No HP</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($siswa) && is_array($siswa)) :?>
-                            <?php $no = 1 ;?>
-                            <?php foreach ($siswa as $s) :?>
-                            <tr>
-                                <td><?= $no++; ?></td>
-                                <td><?= esc($s['nisn']); ?></td>
-                                <td><?= esc($s['nama_siswa']); ?></td>
-                                <td><?= esc($s['kelas']); ?></td>
-                                <td><?= esc($s['jenis_kelamin']); ?></td>
-                                <td><?= esc($s['no_hp']); ?></td>
-                                <td>
-                                    <a href="<?= base_url('siswa/edit/' . ($s['id_siswa'] ?? '')) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="<?= base_url('siswa/hapus/' .($s['id_siswa'] ?? '')) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</a>
-                                    <a href="<?= base_url('qrcode/generate/' . $s['id_siswa']) ?>" class="btn btn-sm btn-info">
-                                        <i class="fas fa-qrcode"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else:?>
-                        <tr>
-                            <td colspan="7">Data siswa tidak tersedia.</td>
-                        </tr>
-                    <?php endif;?>
-                    </tbody>
-                </table>
             </div>
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Pesan Flashdata -->
+                    <?php if (session()->getFlashdata('pesan')) : ?>
+                        <div class="alert alert-success">
+                            <?= session()->getFlashdata('pesan'); ?>
+                        </div>
+                    <?php endif; ?>
+            
+                    <!-- Tombol Tambah Siswa -->
+                    <a href="<?= base_url('siswa/tambah') ?>" class="btn btn-primary mb-3">
+                        <i class="fas fa-plus"></i> Tambah Data Siswa
+                    </a>
+            
+                    <!-- Filter Data -->
+                    <div class="card p-3 bg-purple text-white">
+                        <h4>Filter</h4>
+                        <div class="mb-2">
+                            <label>Kelas:</label>
+                            <div class="btn-group">
+                                <a href="<?= base_url('siswa') ?>" class="btn btn-light <?= empty($_GET['kelas']) ? 'active' : '' ?>">Semua</a>
+                                <?php foreach ($kelas as $k): ?>
+                                    <a href="<?= base_url('siswa?kelas=' . urlencode($k['kelas'])) ?>" 
+                                    class="btn btn-light <?= (isset($_GET['kelas']) && $_GET['kelas'] == $k['kelas']) ? 'active' : '' ?>">
+                                        <?= $k['kelas'] ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Tabel Data Siswa -->
+                    <table class="table mt-4 table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>No</th>
+                                <th>NISN</th>
+                                <th>Nama Siswa</th>
+                                <th>Kelas</th>
+                                <th>Jenis Kelamin</th>
+                                <th>No HP</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($siswa) && is_array($siswa)) :?>
+                                <?php $no = 1 ;?>
+                                <?php foreach ($siswa as $s) :?>
+                                <tr>
+                                    <td><?= $no++; ?></td>
+                                    <td><?= esc($s['nisn']); ?></td>
+                                    <td><?= esc($s['nama_siswa']); ?></td>
+                                    <td><?= esc($s['kelas']); ?></td>
+                                    <td><?= esc($s['jenis_kelamin']); ?></td>
+                                    <td><?= esc($s['no_hp']); ?></td>
+                                    <td>
+                                        <a href="<?= base_url('siswa/edit/' . ($s['id_siswa'] ?? '')) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="<?= base_url('siswa/hapus/' .($s['id_siswa'] ?? '')) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</a>
+                                        <a href="<?= base_url('qrcode/generate/' . $s['id_siswa']) ?>" class="btn btn-sm btn-info">
+                                            <i class="fas fa-qrcode"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else:?>
+                            <tr>
+                                <td colspan="7">Data siswa tidak tersedia.</td>
+                            </tr>
+                        <?php endif;?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
+
+        <!-- Footer -->
+        <?= $this->include('layout/footer')?>
+        <!-- ./wrapper -->
     </div>
-
-    <?= $this->endSection() ?>
-
-
-
-
-    <!-- Footer -->
-    <?= $this->include('layout/footer')?>
-    <!-- ./wrapper -->
-
     <!-- jQuery -->
     <script src="<?= base_url()?>/templates/plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->

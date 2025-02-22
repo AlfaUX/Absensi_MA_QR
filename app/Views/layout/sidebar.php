@@ -44,50 +44,20 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+            <a href="<?= base_url('/siswa/index')?>" class="nav-link">
+              <i class="nav-icon fas fa-user-graduate"></i>
               <p>
-                Data Guru & Siswa
-                <i class="fas fa-angle-left right"></i>
+                Data Siswa
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?= base_url('#')?>" class="nav-link">
-                  <i class="fas fa-chevron-right nav-icon"></i>
-                  <p>Data Guru</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('/siswa/index')?>" class="nav-link">
-                  <i class="fas fa-chevron-right nav-icon"></i>
-                  <p>Data Siswa</p>
-                </a>
-              </li>
-            </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link">
+            <a href="<?= base_url('absensi/index')?>" class="nav-link">
               <i class="nav-icon fas fa-clipboard-list"></i>
               <p>
-                Data Absensi
-                <i class="right fas fa-angle-left"></i>
+                Data Absensi siswa
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?= base_url('#')?>" class="nav-link">
-                  <i class="fas fa-chevron-right nav-icon"></i>
-                  <p>Absensi Guru</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('absensi/index')?>" class="nav-link">
-                  <i class="fas fa-chevron-right nav-icon"></i>
-                  <p>Absensi Siswa</p>
-                </a>
-              </li>
-            </ul>
           </li>
 
           <li class="nav-item">
@@ -118,14 +88,14 @@
           <li class="nav-header">Manajemen Admin</li>
           <li class="nav-item">
             <a href="<?= base_url('admin/index')?>" class="nav-link">
-              <i class="nav-icon far fa-user"></i>
+              <i class="nav-icon fas fa-user-shield"></i>
               <p>
                 Data Admin
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= base_url()?>/templates/kanban.html" class="nav-link">
+            <a href="<?= base_url('admin/profil_sekolah/index')?>" class="nav-link">
               <i class="nav-icon fas fa-school"></i>
               <p>
                 Profil Sekolah
@@ -134,7 +104,7 @@
           </li>
           <li class="nav-item">
             <a href="<?= base_url('absensi/scan') ?>" class="nav-link">
-              <i class="nav-icon fas fa-clipboard-user"></i>
+              <i class="nav-icon far fa-clipboard"></i>
               <p>
                 Presensi
               </p>
