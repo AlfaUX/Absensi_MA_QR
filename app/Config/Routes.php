@@ -37,14 +37,14 @@ $routes->get('siswa/generate/(:num)', 'Siswa::generate/$1', ['filter' => 'auth']
 $routes->get('qrcode/generate/(:num)', 'QRCodeController::generate/$1');
 
 //data absensi siswa
-$routes->get('/absensi/index', 'Absensi::index', ['filter' => 'auth']);
-$routes->get('/absensi', 'Absensi::index');
-$routes->get('/absensi/scan', 'Absensi::scan');
-$routes->post('absensi/prosesScan', 'Absensi::prosesScan');
-$routes->post('/absensi/saveScan', 'Absensi::saveScan');
-$routes->get('absensi/edit/(:num)', 'Absensi::edit/$1');
-$routes->post('absensi/update', 'Absensi::update');
-$routes->get('absensi/hapus/(:num)', 'Absensi::hapus/$1');
+$routes->get('/absensi/index', 'AbsensiController::index', ['filter' => 'auth']);
+$routes->get('/absensi', 'AbsensiController::index');
+$routes->get('/absensi/scan', 'AbsensiController::scan');
+$routes->post('absensi/prosesScan', 'AbsensiController::prosesScan');
+$routes->post('/absensi/saveScan', 'AbsensiController::saveScan');
+$routes->get('absensi/edit/(:num)', 'AbsensiController::edit/$1');
+$routes->post('absensi/update', 'AbsensiController::update');
+$routes->get('absensi/hapus/(:num)', 'AbsensiController::hapus/$1');
 
 //download laporan
 $routes->get('/laporan/index', 'LaporanController::index', ['filter' => 'auth']);
@@ -53,6 +53,9 @@ $routes->get('laporan/exportPdf', 'LaporanController::exportPdf');
 $routes->get('laporan/exportExcel', 'LaporanController::exportExcel');
 $routes->post('laporan/exportPdf', 'LaporanController::exportPdf');
 $routes->post('laporan/exportExcel', 'LaporanController::exportExcel');
+$routes->get('/laporan/preview', 'LaporanController::preview');
+$routes->post('/laporan/generatePDF', 'LaporanController::generatePDF');
+
 
 //data admin
 $routes->get('admin/index', 'AdminController::index', ['filter' => 'auth']);               // List admin

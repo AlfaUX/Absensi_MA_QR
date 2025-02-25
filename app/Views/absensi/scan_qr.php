@@ -202,8 +202,17 @@
     <audio id="error-audio" src="<?= base_url('audio/sudah_absen.wav') ?>"></audio>
 
     <script>
+        // Add this at the top of your script
+        let scannerActive = true;
+
         function onScanSuccess(decodedText, decodedResult) {
+            if (!scannerActive) return; // Prevent multiple scans
+            
             console.log("Scanned QR: ", decodedText);
+            
+            // Disable scanner temporarily
+            scannerActive = false;
+            document.getElementById('scan-result').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
 
             const absensiType = document.getElementById('absensi-type').value;
 
@@ -224,14 +233,30 @@
                     document.getElementById('result-kelas').textContent = data.siswa.id_kelas;
                     document.getElementById('result-keterangan').textContent = data.message;
                     document.getElementById('success-audio').play();
+                    
+                    // Re-enable scanner after 5 seconds
+                    setTimeout(() => {
+                        scannerActive = true;
+                        document.getElementById('scan-result').innerHTML = '<i class="fas fa-camera me-2"></i>Arahkan kamera ke QR Code';
+                    }, 5000);
                 } else {
                     document.getElementById('result-keterangan').textContent = data.message;
                     document.getElementById('error-audio').play();
+                    
+                    // Re-enable scanner after 3 seconds
+                    setTimeout(() => {
+                        scannerActive = true;
+                        document.getElementById('scan-result').innerHTML = '<i class="fas fa-camera me-2"></i>Arahkan kamera ke QR Code';
+                    }, 3000);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 document.getElementById('result-keterangan').textContent = 'Gagal memproses scan.';
+                
+                // Re-enable scanner
+                scannerActive = true;
+                document.getElementById('scan-result').innerHTML = '<i class="fas fa-camera me-2"></i>Arahkan kamera ke QR Code';
             });
         }
 

@@ -8,7 +8,7 @@ use App\Models\KeteranganModel;
 use App\Models\KelasModel;
 use CodeIgniter\Controller;
 
-class Absensi extends Controller
+class AbsensiController extends Controller
 {
     protected $absensiModel;
     protected $siswaModel;
@@ -42,66 +42,104 @@ class Absensi extends Controller
     // Scan QR Code dan Simpan Absensi
     public function scan()
     {
-        return view('absensi/scan', ['title' => 'Scan QR Code']);
+        return view('absensi/scan_qr', ['title' => 'Scan QR Code']);
     }
 
-    // Proses hasil scan QR
     public function prosesScan()
     {
         $request = service('request');
-        $nisn = $request->getPost('qr_code'); // NISN dikodekan dalam QR
-    
+        $nisn = $request->getPost('qr_code'); // NISN from QR
+        $type = $request->getPost('type'); // Get type (datang/pulang)
+        
         if (!$nisn) {
             return $this->response->setJSON(['keterangan' => 'error', 'message' => 'QR Code tidak valid.']);
         }
-    
-        // Cari siswa berdasarkan NISN
-        $siswa = $this->absensiModel->getSiswaByNisn($nisn);
+        
+        // Get student data by NISN
+        $siswa = $this->siswaModel->where('nisn', $nisn)->first();
         if (!$siswa) {
             return $this->response->setJSON(['keterangan' => 'error', 'message' => 'Siswa tidak ditemukan.']);
         }
-    
+        
         $id_siswa = $siswa['id_siswa'];
         $tanggal_hari_ini = date('Y-m-d');
-        $waktu_hari_ini = date('H:i:s');
-    
-        // Cek jumlah absensi hari ini
-        $jumlah_absensi = $this->absensiModel->hitungAbsensiHarian($id_siswa, $tanggal_hari_ini, $waktu_hari_ini);
-    
-        if ($jumlah_absensi >= 1) {
+        
+        // Check if it's entry (datang) or exit (pulang)
+        if ($type == 'datang') {
+            // Check if already attended today
+            $jumlah_absensi = $this->absensiModel->where('id_siswa', $id_siswa)
+                                                 ->where('tanggal', $tanggal_hari_ini)
+                                                 ->countAllResults();
+            
+            if ($jumlah_absensi >= 1) {
+                return $this->response->setJSON([
+                    'keterangan' => 'sudah_absen',
+                    'message' => 'Anda sudah absen datang hari ini!'
+                ]);
+            }
+            
+            // Get attendance status (e.g., "Hadir")
+            $id_keterangan = $this->keteranganModel->where('keterangan', 'Hadir')->first()['id_keterangan'];
+            
+            date_default_timezone_set('Asia/Jakarta');
+            // Save new attendance record
+            $data = [
+                'id_siswa' => $id_siswa,
+                'nisn' => $nisn, // Make sure to store NISN for later reference
+                'tanggal' => $tanggal_hari_ini,
+                'jam_masuk' => date('H:i:s'),
+                'id_keterangan' => $id_keterangan,
+            ];
+            $this->absensiModel->insert($data);
+            
             return $this->response->setJSON([
-                'keterangan' => 'sudah_absen',
-                'message' => 'Anda sudah absen hari ini, absensi ditolak!'
+                'keterangan' => 'success',
+                'message' => 'Absensi datang berhasil!',
+                'siswa' => $siswa
+            ]);
+        } 
+        // Handle exit attendance (pulang)
+        else if ($type == 'pulang') {
+            // Look for today's attendance record for this student
+            $absensi = $this->absensiModel->where('id_siswa', $id_siswa)
+                                          ->where('tanggal', $tanggal_hari_ini)
+                                          ->first();
+            
+            // If no entry attendance found
+            if (!$absensi) {
+                return $this->response->setJSON([
+                    'keterangan' => 'error',
+                    'message' => 'Anda belum melakukan absensi datang hari ini!'
+                ]);
+            }
+            
+            // If exit attendance already recorded
+            if (!empty($absensi['jam_pulang'])) {
+                return $this->response->setJSON([
+                    'keterangan' => 'sudah_absen',
+                    'message' => 'Anda sudah melakukan absensi pulang hari ini!'
+                ]);
+            }
+            
+            date_default_timezone_set('Asia/Jakarta');
+            // Update the existing attendance record with exit time
+            $this->absensiModel->update($absensi['id_absensi'], [
+                'jam_pulang' => date('H:i:s')
+            ]);
+            
+            return $this->response->setJSON([
+                'keterangan' => 'success',
+                'message' => 'Absensi pulang berhasil!',
+                'siswa' => $siswa
             ]);
         }
         
-    
-        // Ambil ID keterangan default (misalnya "Hadir")
-        $id_keterangan = $this->absensiModel->getIdKeterangan('Hadir');
-    
-        if (!$id_keterangan) {
-            return $this->response->setJSON(['keterangan' => 'error', 'message' => 'Kategori absensi tidak ditemukan.']);
-        }
-
-        date_default_timezone_set('Asia/Jakarta');
-    
-        // Simpan absensi
-        $data = [
-            'id_siswa' => $id_siswa,
-            'waktu_absensi' => date('Y-m-d H:i:s'),
-            'tanggal'=> date('Y-m-d', strtotime(date('d-m-Y'))), // Mengubah format
-            'waktu' => date('H:i:s'),
-            'id_keterangan' => $id_keterangan,
-        ];
-        $this->absensiModel->insert($data);
-    
+        // Invalid attendance type
         return $this->response->setJSON([
-            'keterangan' => 'success',
-            'message' => 'Absensi berhasil!',
-            'siswa' => $siswa
+            'keterangan' => 'error',
+            'message' => 'Tipe absensi tidak valid!'
         ]);
-    }           
-    
+    }
     
     public function edit($id)
     {

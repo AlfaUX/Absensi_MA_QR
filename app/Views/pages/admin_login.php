@@ -41,7 +41,7 @@
         }
         
         .logo-img {
-            width: 200px;
+            width: 150px;
             height: auto;
         }
 
@@ -51,7 +51,7 @@
         }
         
         .form-container {
-            max-height: 90vh;
+            max-height: 95vh;
             overflow-y: auto;
         }
     </style>
@@ -63,7 +63,7 @@
                 <div class="col-12 col-xxl-11">
                     <div class="card border-light-subtle">
                         <div class="row g-0">
-                            <div class="col-12 col-md-7 img-container">
+                            <div class="col-11 col-md-7 d-block img-container">
                                 <img class="img-fluid rounded-start w-100 h-100 object-fit-cover" loading="lazy" src="<?= base_url()?>/templates/dist/img/fotogtk.jpg">
                             </div>
                             <div class="col-12 col-md-5 d-flex align-items-center justify-content-center form-container">
@@ -89,18 +89,18 @@
                                         <form action="<?= base_url('/pages/admin_login/prosesLogin') ?>" method="POST">
                                             <div class="row gy-3">
                                                 <div class="col-12">
-                                                    <div class="form-floating mb-3">
+                                                    <div class="form-floating mb-2">
                                                         <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username" required>
                                                         <label for="username" class="form-label">Username</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
-                                                    <div class="form-floating mb-3">
+                                                    <div class="form-floating mb-2">
                                                         <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password" required>
                                                         <label for="password" class="form-label">Password</label>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-12 mx-auto">
                                                     <div class="d-grid gap-2">
                                                         <button class="btn btn-dark btn-lg" type="submit">Login</button>
                                                         <a href="<?= base_url('/') ?>" class="btn btn-outline-dark btn-lg">Absensi</a>

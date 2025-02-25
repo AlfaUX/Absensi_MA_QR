@@ -10,7 +10,7 @@ class CreateTbAbsensiKeterangan extends Migration
     {
         // Tabel tb_keterangan
         $this->forge->addField([
-            'id' => [
+            'id_keterangan' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
@@ -37,10 +37,18 @@ class CreateTbAbsensiKeterangan extends Migration
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
+            'id_kelas' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'unsigned'   => true,
+            ],
             'tanggal' => [
                 'type' => 'DATE',
             ],
-            'waktu' => [
+            'jam_masuk' => [
+                'type' => 'TIME',
+            ],
+            'jam_pulang' => [
                 'type' => 'TIME',
             ],
             'id_keterangan' => [
@@ -59,6 +67,7 @@ class CreateTbAbsensiKeterangan extends Migration
         ]);
         $this->forge->addKey('id_absensi', true);
         $this->forge->addForeignKey('id_siswa', 'tb_siswa', 'id_siswa', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_kelas', 'tb_siswa', 'id_kelas', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_keterangan', 'tb_keterangan', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('tb_absensi');
     }
@@ -66,6 +75,7 @@ class CreateTbAbsensiKeterangan extends Migration
     public function down()
     {
         $this->forge->dropTable('tb_absensi');
+        $this->forge->dropTable('tb_kelas');
         $this->forge->dropTable('tb_keterangan');
     }
 }

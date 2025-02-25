@@ -8,7 +8,7 @@ class SiswaModel extends Model
 {
     protected $table = 'tb_siswa';
     protected $primaryKey = 'id_siswa';
-    protected $allowedFields = ['nisn', 'nama_siswa', 'id_kelas', 'jenis_kelamin', 'no_hp'];
+    protected $allowedFields = ['nisn', 'nama_siswa', 'id_kelas', 'jenis_kelamin', 'no_hp', 'qr_code'];
 
     public function getSiswa($kelas = null)
     {
@@ -22,4 +22,10 @@ class SiswaModel extends Model
 
         return $builder->get()->getResultArray();
     }
+
+    public function getByQrCode($qrCode)
+    {
+        return $this->where('qr_code', $qrCode)->first();
+    }
+
 }

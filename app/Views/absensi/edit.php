@@ -68,7 +68,7 @@
                                 <label for="id_keterangan" class="form-label">Keterangan</label>
                                 <select name="id_keterangan" id="id_keterangan" class="form-control">
                                     <?php foreach ($keterangan as $ket): ?>
-                                        <option value="<?= $ket['id'] ?>" <?= $ket['id'] == $absensi['id_keterangan'] ? 'selected' : '' ?>>
+                                        <option value="<?= $ket['id_keterangan'] ?>" <?= $ket['id_keterangan'] == $absensi['id_keterangan'] ? 'selected' : '' ?>>
                                             <?= esc($ket['keterangan']) ?>
                                         </option>
                                     <?php endforeach; ?>

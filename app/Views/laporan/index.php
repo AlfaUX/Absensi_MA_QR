@@ -32,19 +32,19 @@
         <?= $this->include('layout/sidebar')?>
         <div class="content-wrapper">
             <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Tambah Siswa</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="<?= base_url('pages/dashboard') ?>" >Home</a></li>
-                    <li class="breadcrumb-item active">Tambah Siswa</li>
-                    </ol>
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Laporan Absensi</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="<?= base_url('pages/dashboard') ?>">Home</a></li>
+                                <li class="breadcrumb-item active">Laporan Absensi</li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
             <section class="content">
                 <div class="container-fluid">
@@ -81,25 +81,24 @@
                                     <button type="submit" class="btn btn-success">
                                         <i class="fas fa-download"></i> Download Laporan
                                     </button>
+                                    <a href="<?= base_url('laporan/exportPdf') ?>" class="btn btn-danger">Export PDF</a>
+                                    <a href="<?= base_url('laporan/exportExcel') ?>" class="btn btn-success">Export Excel</a>
                                 </div>
-                                <a href="<?= base_url('laporan/exportPdf') ?>" class="btn btn-danger">Export PDF</a>
-                                <a href="<?= base_url('laporan/exportExcel') ?>" class="btn btn-success">Export Excel</a>
-            
                             </form>
                         </div>
                     </div>
                 </div>
             </section>
-
         </div>
     </div>
-        <!-- jQuery -->
-        <script src="<?= base_url()?>/templates/plugins/jquery/jquery.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="<?= base_url()?>/templates/plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="<?= base_url()?>/templates/plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-    $.widget.bridge('uibutton', $.ui.button)
+        $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- Bootstrap 4 -->
     <script src="<?= base_url()?>/templates/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

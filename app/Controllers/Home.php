@@ -6,6 +6,6 @@ class Home extends BaseController
 {
     public function index(): string
     {
-        return view('absensi/scan');
+        return view('absensi/scan_qr');
     }
 }

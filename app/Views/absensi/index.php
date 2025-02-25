@@ -101,7 +101,8 @@
                                 <th>Nama Siswa</th>
                                 <th>Kelas</th>
                                 <th>Tanggal</th>
-                                <th>Waktu</th>
+                                <th>Jam masuk</th>
+                                <th>Jam Pulang</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -116,7 +117,8 @@
                                     <td><?= esc($a['nama_siswa']); ?></td>
                                     <td><?= esc($a['kelas']); ?></td>
                                     <td><?= esc($a['tanggal']); ?></td>
-                                    <td><?= esc($a['waktu']); ?></td>
+                                    <td><?= esc($a['jam_masuk']); ?></td>
+                                    <td><?= empty($a['jam_pulang']) ? '-' : esc($a['jam_pulang']); ?></td>
                                     <td><?= esc($a['keterangan']); ?></td>
                                     <td>
                                         <!-- Tombol Edit -->
@@ -186,7 +188,6 @@
             $('.btn-edit').on('click', function() {
                 var id = $(this).data('id');
                 var keterangan = $(this).data('keterangan');
-
                 $('#id_absensi').val(id);
                 $('#id_keterangan').val(keterangan);
             });
